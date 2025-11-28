@@ -1,0 +1,569 @@
+<!DOCTYPE html>
+<html lang="zh-TW">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>北歐極光之旅 2026</title>
+    <!-- 引入 Tailwind CSS -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    <!-- 引入 React 和 ReactDOM -->
+    <script crossorigin src="https://unpkg.com/react@18/umd/react.production.min.js"></script>
+    <script crossorigin src="https://unpkg.com/react-dom@18/umd/react-dom.production.min.js"></script>
+    <!-- 引入 Babel 用於解析 JSX -->
+    <script src="https://unpkg.com/@babel/standalone/babel.min.js"></script>
+    
+    <style>
+        body { background-color: #0f172a; }
+        /* 自定義滾動條 */
+        ::-webkit-scrollbar { width: 8px; }
+        ::-webkit-scrollbar-track { background: #0f172a; }
+        ::-webkit-scrollbar-thumb { background: #334155; border-radius: 4px; }
+        ::-webkit-scrollbar-thumb:hover { background: #475569; }
+    </style>
+</head>
+<body>
+    <div id="root"></div>
+
+    <script type="text/babel">
+        const { useState } = React;
+
+        // --- 內建圖示組件 (解決外部引用錯誤) ---
+        const IconBase = ({ size = 24, className = "", children }) => (
+            <svg 
+                xmlns="http://www.w3.org/2000/svg" 
+                width={size} 
+                height={size} 
+                viewBox="0 0 24 24" 
+                fill="none" 
+                stroke="currentColor" 
+                strokeWidth="2" 
+                strokeLinecap="round" 
+                strokeLinejoin="round" 
+                className={className}
+            >
+                {children}
+            </svg>
+        );
+
+        const Plane = (props) => (
+            <IconBase {...props}>
+                <path d="M2 12h20" /><path d="M13 2l9 10-9 10" /><path d="M2 12l5-5m-5 5l5 5" />
+            </IconBase>
+        ); // 替換為更像飛機的圖標
+        const PlaneIcon = (props) => (
+            <IconBase {...props}>
+                <path d="M20.5 10.5 12 12l-1-7-6 4 2 3H3l-1 3 4-1 3 4 5-1 4 4 1-7.5Z" />
+            </IconBase>
+        );
+
+        const Train = (props) => (
+            <IconBase {...props}>
+                <rect width="16" height="16" x="4" y="4" rx="2" />
+                <path d="M4 10h16" />
+                <path d="M12 4v8" />
+                <path d="m8 20-1 2" />
+                <path d="m16 20 1 2" />
+            </IconBase>
+        );
+
+        const Bus = (props) => (
+            <IconBase {...props}>
+                <rect width="16" height="16" x="4" y="4" rx="2.5" />
+                <path d="M4 11h16" />
+                <path d="M8 19v2" />
+                <path d="M16 19v2" />
+            </IconBase>
+        );
+
+        const MapPin = (props) => (
+            <IconBase {...props}>
+                <path d="M20 10c0 6-8 12-8 12s-8-6-8-12a8 8 0 0 1 16 0Z" />
+                <circle cx="12" cy="10" r="3" />
+            </IconBase>
+        );
+
+        const BedDouble = (props) => (
+            <IconBase {...props}>
+                <path d="M2 20v-8" />
+                <path d="M22 20v-8" />
+                <path d="M2 12h20" />
+                <path d="M3 10a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2v2H3v-2Z" />
+            </IconBase>
+        );
+
+        const Utensils = (props) => (
+            <IconBase {...props}>
+                <path d="M3 2v7c0 1.1.9 2 2 2h4a2 2 0 0 0 2-2V2" />
+                <path d="M7 2v20" />
+                <path d="M21 15V2v0a5 5 0 0 0-5 5v6c0 1.1.9 2 2 2h3Zm0 0v7" />
+            </IconBase>
+        );
+
+        const Camera = (props) => (
+            <IconBase {...props}>
+                <path d="M14.5 4h-5L7 7H4a2 2 0 0 0-2 2v9a2 2 0 0 0 2 2h16a2 2 0 0 0 2-2V9a2 2 0 0 0-2-2h-3l-2.5-3z" />
+                <circle cx="12" cy="13" r="3" />
+            </IconBase>
+        );
+
+        const ExternalLink = (props) => (
+            <IconBase {...props}>
+                <path d="M18 13v6a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h6" />
+                <polyline points="15 3 21 3 21 9" />
+                <line x1="10" x2="21" y1="14" y2="3" />
+            </IconBase>
+        );
+
+        const CalendarIcon = (props) => (
+            <IconBase {...props}>
+                <rect width="18" height="18" x="3" y="4" rx="2" ry="2" />
+                <line x1="16" x2="16" y1="2" y2="6" />
+                <line x1="8" x2="8" y1="2" y2="6" />
+                <line x1="3" x2="21" y1="10" y2="10" />
+            </IconBase>
+        );
+
+        const ChevronDown = (props) => (
+            <IconBase {...props}>
+                <path d="m6 9 6 6 6-6" />
+            </IconBase>
+        );
+
+        const ChevronUp = (props) => (
+            <IconBase {...props}>
+                <path d="m18 15-6-6-6 6" />
+            </IconBase>
+        );
+
+        const Navigation = (props) => (
+            <IconBase {...props}>
+                <polygon points="3 11 22 2 13 21 11 13 3 11" />
+            </IconBase>
+        );
+
+        const Sparkles = (props) => (
+            <IconBase {...props}>
+                <path d="m12 3-1.912 5.813a2 2 0 0 1-1.275 1.275L3 12l5.813 1.912a2 2 0 0 1 1.275 1.275L12 21l1.912-5.813a2 2 0 0 1 1.275-1.275L21 12l-5.813-1.912a2 2 0 0 1-1.275-1.275L12 3Z" />
+                <path d="M5 3v4" />
+                <path d="M9 3v4" />
+                <path d="M7 5h4" />
+                <path d="M3 5h4" />
+            </IconBase>
+        );
+        // ------------------------------------------
+
+        const ItineraryApp = () => {
+            const [expandedDays, setExpandedDays] = useState({
+                day0: true, day1: true, day2: true, day3: true, day4: true, 
+                day5: true, day6: true, day7: true, day8: true, day9: true, 
+                day10: true, day11: true
+            });
+
+            const toggleDay = (dayId) => {
+                setExpandedDays(prev => ({
+                    ...prev,
+                    [dayId]: !prev[dayId]
+                }));
+            };
+
+            const toggleAll = (state) => {
+                const newState = {};
+                Object.keys(expandedDays).forEach(key => newState[key] = state);
+                setExpandedDays(newState);
+            }
+
+            const itineraryData = [
+                {
+                id: "day0",
+                dayLabel: "出發日 - 登機",
+                date: "2026/03/03",
+                weekday: "週二",
+                headerImage: "https://images.unsplash.com/photo-1436491865332-7a61a109cc05?w=800&auto=format&fit=crop&q=60", 
+                events: [
+                    { 
+                    time: "15:50", 
+                    title: "台北 → 香港 → 赫爾辛基", 
+                    twd: "25,000", eur: "", note: "國泰航空", link: "https://reurl.cc/Ykea34", method: "飛機", region: "Asia", category: "交通", 
+                    imageUrl: "https://images.unsplash.com/photo-1569154941061-e231b4725ef1?w=300&auto=format&fit=crop&q=60" 
+                    },
+                    { 
+                    time: "21:45", 
+                    title: "香港 → 赫爾辛基", 
+                    twd: "", eur: "", note: "芬蘭航空", link: "", method: "飛機", region: "Asia", category: "交通", 
+                    imageUrl: "https://images.unsplash.com/photo-1530521954074-e64f6810b32d?w=300&auto=format&fit=crop&q=60" 
+                    }
+                ]
+                },
+                {
+                id: "day1",
+                dayLabel: "DAY 1 - Helsinki市區觀光",
+                date: "2026/03/04",
+                weekday: "週三",
+                headerImage: "https://images.unsplash.com/photo-1510414842594-a61c69b5ae57?w=800&auto=format&fit=crop&q=60",
+                events: [
+                    { time: "07:00", title: "HEL機場 → 市區", twd: "160", eur: "4.40", note: "", link: "https://reurl.cc/eV38xL", method: "HSL", region: "Helsinki", category: "交通", imageUrl: "https://sematicweb.detie.cn/railways/OL69xm/finland-vr-train.jpg" },
+                    { time: "08:00", title: "早餐自理", twd: "", eur: "", note: "", link: "", method: "", region: "Helsinki", category: "早餐", imageUrl: "https://images.unsplash.com/photo-1493770348161-369560ae357d?w=300&auto=format&fit=crop&q=60" },
+                    { time: "09:00", title: "赫爾辛基市區觀光", twd: "", eur: "", note: "", link: "", method: "步行/HSL", region: "Helsinki", category: "行程", imageUrl: "https://mediaim.expedia.com/localexpert/46481545/ef578802-77e5-4330-962c-ae663d8d0192.jpg?impolicy=resizecrop&rw=500&rh=280" },
+                    { time: "12:00", title: "午餐自理", twd: "", eur: "", note: "", link: "", method: "", region: "Helsinki", category: "午餐", imageUrl: "https://images.unsplash.com/photo-1493770348161-369560ae357d?w=300&auto=format&fit=crop&q=60" },
+                    { time: "18:00", title: "晚餐自理", twd: "", eur: "", note: "", link: "", method: "", region: "Helsinki", category: "晚餐", imageUrl: "https://images.unsplash.com/photo-1493770348161-369560ae357d?w=300&auto=format&fit=crop&q=60" },
+                    { time: "21:19", title: "赫爾辛基 → 凱米 (夜舖火車)", twd: "2,905", eur: "80.00", note: "夜舖", link: "https://www.vr.fi/en", method: "VR", region: "Helsinki", category: "交通", imageUrl: "https://sematicweb.detie.cn/railways/OL69xm/finland-vr-train.jpg" }
+                ]
+                },
+                {
+                id: "day2",
+                dayLabel: "DAY 2 - Kemi破冰船",
+                date: "2026/03/05",
+                weekday: "週四",
+                headerImage: "https://images.unsplash.com/photo-1610486259066-e8d19736c4f0?w=800&auto=format&fit=crop&q=60",
+                events: [
+                    { time: "08:17", title: "凱米車站 → 碼頭區", twd: "", eur: "", note: "", link: "", method: "步行/Uber", region: "Kemi", category: "交通", imageUrl: "https://images.unsplash.com/photo-1483383416198-466d33306634?w=300&auto=format&fit=crop&q=60" },
+                    { time: "08:30", title: "早餐自理", twd: "", eur: "", note: "", link: "", method: "", region: "Kemi", category: "早餐", imageUrl: "https://images.unsplash.com/photo-1493770348161-369560ae357d?w=300&auto=format&fit=crop&q=60" },
+                    { time: "10:00", title: "Snow Castle 參觀", twd: "1,087", eur: "30.00", note: "", link: "https://reurl.cc/rKD8xy", method: "", region: "Kemi", category: "行程", imageUrl: "https://experience365.fi/wp-content/uploads/2025/06/snowexperience365-2025-4-768x576.jpg" },
+                    { time: "12:25", title: "破冰船行程 (Arktis)", twd: "11,849", eur: "327.00", note: "登記登船", link: "https://reurl.cc/jm155q", method: "船", region: "Kemi", category: "行程", imageUrl: "https://images.citybreakcdn.com/image.aspx?ImageId=12018016&width=1400&height=700&fitaspect=1" },
+                    { time: "16:30", title: "碼頭 → 凱米車站", twd: "", eur: "", note: "接駁", link: "", method: "接駁", region: "Kemi", category: "交通", imageUrl: "https://images.unsplash.com/photo-1544620347-c4fd4a3d5957?w=300&auto=format&fit=crop&q=60" },
+                    { time: "19:05", title: "凱米 → Rovaniemi", twd: "300", eur: "8.30", note: "", link: "", method: "VR", region: "Kemi", category: "交通", imageUrl: "https://sematicweb.detie.cn/railways/OL69xm/finland-vr-train.jpg" },
+                    { time: "20:00", title: "Arctic Retro Luxe (入住)", twd: "8,299", eur: "", note: "共3晚", link: "https://reurl.cc/Xajkkj", method: "", region: "Rovaniemi", category: "住宿", imageUrl: "https://cf.bstatic.com/xdata/images/hotel/max1024x768/739610022.jpg?k=f9edf4d4fc3f3f0b0d695806fd78edd16e555d1337fe027938ea640a759107e1&o=" }
+                ]
+                },
+                {
+                id: "day3",
+                dayLabel: "DAY 3 - Rovaniemi聖誕老人村",
+                date: "2026/03/06",
+                weekday: "週五",
+                headerImage: "https://images.unsplash.com/photo-1543058864-469b6574944a?w=800&auto=format&fit=crop&q=60",
+                events: [
+                    { time: "09:30", title: "市區 → 聖誕老人渡假村", twd: "145", eur: "4.00", note: "", link: "https://reurl.cc/R9r119", method: "巴士", region: "Rovaniemi", category: "交通", imageUrl: "https://images.unsplash.com/photo-1570125909232-eb263c188f7e?w=300&auto=format&fit=crop&q=60" },
+                    { time: "10:00", title: "Santa Claus Holiday Village", twd: "", eur: "", note: "", link: "", method: "", region: "Rovaniemi", category: "行程", imageUrl: "https://cf.bstatic.com/xdata/images/hotel/max1024x768/99929423.jpg?k=840b7f0d5d18ff764cf87d16909afefc18925cdac911937bf47d044d3fe4be71&o=" },
+                    { time: "16:30", title: "聖誕老人渡假村 → 市區", twd: "145", eur: "4.00", note: "", link: "https://reurl.cc/R9r119", method: "巴士", region: "Rovaniemi", category: "交通", imageUrl: "https://images.unsplash.com/photo-1570125909232-eb263c188f7e?w=300&auto=format&fit=crop&q=60" },
+                    { time: "18:00", title: "森林踏雪追極光＆極光野餐", twd: "2,827", eur: "", note: "KKday", link: "https://reurl.cc/jm15qq", method: "接駁", region: "Rovaniemi", category: "行程", imageUrl: "https://media-cdn.tripadvisor.com/media/attractions-splice-spp-720x480/07/bb/39/27.jpg" },
+                    { time: "20:00", title: "Arctic Retro Luxe (續住)", twd: "", eur: "", note: "", link: "", method: "", region: "Rovaniemi", category: "住宿", imageUrl: "https://cf.bstatic.com/xdata/images/hotel/max1024x768/739610022.jpg?k=f9edf4d4fc3f3f0b0d695806fd78edd16e555d1337fe027938ea640a759107e1&o=" }
+                ]
+                },
+                {
+                id: "day4",
+                dayLabel: "DAY 4 - 拉努阿野生動物園",
+                date: "2026/03/07",
+                weekday: "週六",
+                headerImage: "https://images.unsplash.com/photo-1589656966895-2f33e765387c?w=800&auto=format&fit=crop&q=60",
+                events: [
+                    { time: "09:30", title: "前往 Ranua ZOO", twd: "660", eur: "18.20", note: "發車時間", link: "https://reurl.cc/3boLNO", method: "巴士", region: "Rovaniemi", category: "交通", imageUrl: "https://images.unsplash.com/photo-1570125909232-eb263c188f7e?w=300&auto=format&fit=crop&q=60" },
+                    { time: "10:30", title: "Ranua ZOO 參觀", twd: "888", eur: "24.50", note: "", link: "https://reurl.cc/VmDX3n", method: "", region: "Rovaniemi", category: "行程", imageUrl: "https://media-cdn.tripadvisor.com/media/attractions-splice-spp-720x480/11/fd/df/f7.jpg" },
+                    { time: "13:00", title: "Arctic Igloos Restaurant", twd: "562", eur: "15.50", note: "", link: "https://reurl.cc/VmDX3n", method: "", region: "Rovaniemi", category: "午餐", imageUrl: "https://ranuaresort.com/wp-content/uploads/2025/11/IMG-20231127-WA0014-scaled.jpg" },
+                    { time: "16:18", title: "Ranua ZOO → Rovaniemi", twd: "660", eur: "18.20", note: "", link: "https://reurl.cc/3boLNO", method: "巴士", region: "Rovaniemi", category: "交通", imageUrl: "https://images.unsplash.com/photo-1469854523086-cc02fe5d8800?w=300&auto=format&fit=crop&q=60" },
+                    { time: "20:00", title: "Arctic Retro Luxe (續住)", twd: "", eur: "", note: "", link: "", method: "", region: "Rovaniemi", category: "住宿", imageUrl: "https://cf.bstatic.com/xdata/images/hotel/max1024x768/739610022.jpg?k=f9edf4d4fc3f3f0b0d695806fd78edd16e555d1337fe027938ea640a759107e1&o=" }
+                ]
+                },
+                {
+                id: "day5",
+                dayLabel: "DAY 5 - Saariselkä極光玻璃屋",
+                date: "2026/03/08",
+                weekday: "週日",
+                headerImage: "https://images.unsplash.com/photo-1531366936337-7c912a4589a7?w=800&auto=format&fit=crop&q=60",
+                events: [
+                    { time: "08:30", title: "Rovaniemi → Saariselkä", twd: "1,518", eur: "41.80", note: "", link: "", method: "巴士", region: "Saariselkä", category: "交通", imageUrl: "https://images.unsplash.com/photo-1570125909232-eb263c188f7e?w=300&auto=format&fit=crop&q=60" },
+                    { time: "12:00", title: "午餐自理", twd: "", eur: "", note: "", link: "", method: "", region: "Saariselkä", category: "午餐", imageUrl: "https://images.unsplash.com/photo-1574484284002-952d92456975?w=300&auto=format&fit=crop&q=60" },
+                    { time: "16:00", title: "Saariselkä 玻璃屋 D1", twd: "16,000", eur: "", note: "", link: "https://reurl.cc/pK1yoZ", method: "", region: "Saariselkä", category: "住宿", imageUrl: "https://r.profitroom.com/northernlightsvillagesaariselka/images/gallery/983d18d2-a8b5-45e2-a3f1-cf9cea325a15.jpg" }, 
+                    { time: "18:00", title: "飯店晚餐", twd: "", eur: "", note: "", link: "", method: "", region: "Saariselkä", category: "晚餐", imageUrl: "https://images.unsplash.com/photo-1414235077428-338989a2e8c0?w=300&auto=format&fit=crop&q=60" }
+                ]
+                },
+                {
+                id: "day6",
+                dayLabel: "DAY 6 - Saariselkä極光玻璃屋&雪地體驗",
+                date: "2026/03/09",
+                weekday: "週一",
+                headerImage: "https://images.unsplash.com/photo-1548263594-a71265ce0563?w=800&auto=format&fit=crop&q=60",
+                events: [
+                    { time: "09:00", title: "飯店早餐", twd: "", eur: "", note: "", link: "", method: "", region: "Saariselkä", category: "早餐", imageUrl: "https://images.unsplash.com/photo-1414235077428-338989a2e8c0?w=300&auto=format&fit=crop&q=60" },
+                    { time: "12:00", title: "Saariselkä 玻璃屋 D2", twd: "16,000", eur: "", note: "續住", link: "https://reurl.cc/pK1yoZ", method: "", region: "Saariselkä", category: "住宿", imageUrl: "https://r.profitroom.com/northernlightsvillagesaariselka/images/gallery/983d18d2-a8b5-45e2-a3f1-cf9cea325a15.jpg" },
+                    { time: "14:00", title: "麋鹿雪橇", twd: "", eur: "", note: "飯店贈送", link: "", method: "", region: "Saariselkä", category: "行程", imageUrl: "https://media.wwpkg.com.hk/live/Resources/Tour/20250702/9642bcd2-a21b-4608-9388-23d96916b678.jpg?_gl=1*1fm744z*_gcl_au*MzUwNzM4MjA1LjE3NjQyOTM1ODg." },
+                    { time: "15:00", title: "哈士奇雪橇", twd: "", eur: "", note: "飯店贈送", link: "", method: "", region: "Saariselkä", category: "行程", imageUrl: "https://www.theaurorazone.com/cdn-cgi/image/quality=85,format=auto/wp-content/uploads/tour_images/husky2_rsz_30012025122052680-1.jpg" },
+                    { time: "18:00", title: "飯店晚餐", twd: "", eur: "", note: "", link: "", method: "", region: "Saariselkä", category: "晚餐", imageUrl: "https://images.unsplash.com/photo-1414235077428-338989a2e8c0?w=300&auto=format&fit=crop&q=60" }
+                ]
+                },
+                {
+                id: "day7",
+                dayLabel: "DAY 7 - Kirkenes市區觀光",
+                date: "2026/03/10",
+                weekday: "週二",
+                headerImage: "https://images.unsplash.com/photo-1517411032315-54ef2cb783bb?w=800&auto=format&fit=crop&q=60",
+                events: [
+                    { time: "07:00", title: "Saariselkä → Kirkenes", twd: "3,454", eur: "95.00", note: "跨國巴士", link: "https://ilmarislantky.com/services/", method: "巴士", region: "Saariselkä", category: "交通", imageUrl: "https://images.unsplash.com/photo-1544620347-c4fd4a3d5957?w=300&auto=format&fit=crop&q=60" },
+                    { time: "13:00", title: "Kirkenes 市區觀光", twd: "", eur: "", note: "", link: "", method: "", region: "Kirkenes", category: "行程", imageUrl: "https://dynamic-media-cdn.tripadvisor.com/media/photo-o/16/b5/51/e7/outside-of-the-church.jpg?w=1400&h=-1&s=1" },
+                    { time: "16:00", title: "Scandic Kirkenes (入住)", twd: "3,300", eur: "", note: "", link: "https://reurl.cc/QVL39o", method: "", region: "Kirkenes", category: "住宿", imageUrl: "https://cf.bstatic.com/xdata/images/hotel/max1024x768/328717823.jpg?k=49262243aed3982491d78b9aec628acd4c0693af793aabeeda4b08f093b92ed3&o=" },
+                    { time: "18:00", title: "晚餐自理", twd: "", eur: "", note: "", link: "", method: "", region: "Kirkenes", category: "晚餐", imageUrl: "https://images.unsplash.com/photo-1559339352-11d035aa65de?w=300&auto=format&fit=crop&q=60" }
+                ]
+                },
+                {
+                id: "day8",
+                dayLabel: "DAY 8 - 冰釣帝王蟹&冰雪酒店",
+                date: "2026/03/11",
+                weekday: "週三",
+                headerImage: "https://images.unsplash.com/photo-1533089862017-541484544a86?w=800&auto=format&fit=crop&q=60",
+                events: [
+                    { time: "09:30", title: "冰釣帝王蟹", twd: "9,800", eur: "240.00", note: "", link: "https://reurl.cc/ZlA7jQ", method: "接駁", region: "Kirkenes", category: "行程", imageUrl: "https://cdn.prod.website-files.com/68514b24f3ff8553745d4fa5/68ef9b0cd503b982853189ea_dnfe-King-Crab-Winter-Norwegian-Travel-Vecora-2024-28_resize%20copy-p-1600.jpg" },
+                    { time: "12:30", title: "午餐帝王蟹", twd: "", eur: "", note: "", link: "", method: "", region: "Kirkenes", category: "午餐", imageUrl: "https://cdn.prod.website-files.com/68514b24f3ff8553745d4fa5/68efe977d3740922399d8885_result_68ea75acb88b3f092bb8fbe6_Kirkenes-Winter-King-Crab-Norwegian-Travel-Babang-2-p-1600.webp" },
+                    { time: "14:00", title: "參觀 SnowHotel", twd: "", eur: "", note: "", link: "", method: "接駁", region: "Kirkenes", category: "行程", imageUrl: "https://dynamic-media-cdn.tripadvisor.com/media/photo-o/16/73/4f/8e/this-is-a-must-do-for.jpg?w=1100&h=-1&s=1" },
+                    { time: "16:00", title: "Kirkenes Snowhotel (入住)", twd: "10,150", eur: "", note: "", link: "https://reurl.cc/KObjre", method: "", region: "Kirkenes", category: "住宿", imageUrl: "https://www.authentic-scandinavia.com/tours/kirkenes-snow-hotel/_/image/9ed54244-74e7-4c8e-abfd-644114870e20:5b44e9c888a35f1e7bc7e0f744164fd60521d834/width-1300/Kirkenes_Snowhotel_-_Ice_room_SMALL.jpg?quality=100" },
+                    { time: "18:00", title: "飯店晚餐", twd: "", eur: "", note: "", link: "", method: "", region: "Kirkenes", category: "晚餐", imageUrl: "https://dynamic-media-cdn.tripadvisor.com/media/photo-o/1b/23/5a/4f/snow-hotel-kirkenes-restaurant.jpg?w=1100&h=-1&s=1" }
+                ]
+                },
+                {
+                id: "day9",
+                dayLabel: "DAY 9 - Oslo市區觀光",
+                date: "2026/03/12",
+                weekday: "週四",
+                headerImage: "https://images.unsplash.com/photo-1536098561742-ca998e48cbcc?w=800&auto=format&fit=crop&q=60",
+                events: [
+                    { time: "08:30", title: "接駁至機場", twd: "", eur: "", note: "", link: "", method: "接駁", region: "Kirkenes", category: "交通", imageUrl: "https://cdn.prod.website-files.com/68514b24f3ff8553745d4fa5/68efdd153624db408e6874e3_result_68ef41a722d095d79dfedd3d_Kirkenes-Winter-Transfer-Norwegian-Travel-3_DSC0307-p-1600.webp" },
+                    { time: "11:30", title: "午餐自理 (機場/機上)", twd: "", eur: "", note: "", link: "", method: "", region: "Kirkenes", category: "午餐", imageUrl: "https://images.unsplash.com/photo-1555396273-367ea4eb4db5?w=300&auto=format&fit=crop&q=60" },
+                    { time: "12:00", title: "Kirkenes → Oslo", twd: "5,484", eur: "", note: "", link: "https://www.norwegian.com/us", method: "挪威航空", region: "Kirkenes", category: "交通", imageUrl: "https://images.unsplash.com/photo-1569154941061-e231b4725ef1?w=300&auto=format&fit=crop&q=60" },
+                    { time: "15:00", title: "Comfort Hotel Børsparken (入住)", twd: "1,700", eur: "", note: "", link: "https://reurl.cc/mko9GG", method: "", region: "OSL", category: "住宿", imageUrl: "https://cf.bstatic.com/xdata/images/hotel/max1024x768/61973361.jpg?k=b5567efe2cca4d8895d22fc81456f258e91e3ef618b91e8dcb83d6969c78a06c&o=" },
+                    { time: "15:30", title: "OSL 機場 → 市區", twd: "393", eur: "", note: "", link: "https://www.vy.no/en", method: "VY", region: "OSL", category: "交通", imageUrl: "https://wowlavie-aws.hmgcdn.com/files/article/a1/16223/atl_m_190016223_510.jpg" },
+                    { time: "16:00", title: "Oslo 市區觀光", twd: "", eur: "", note: "", link: "", method: "VY", region: "OSL", category: "行程", imageUrl: "https://a.travel-assets.com/findyours-php/viewfinder/images/res70/51000/51826-Oslo.jpg" }
+                ]
+                },
+                {
+                id: "day10",
+                dayLabel: "DAY 10 - Oslo市區觀光&登機",
+                date: "2026/03/13",
+                weekday: "週五",
+                headerImage: "https://images.unsplash.com/photo-1506152983158-b4a74a01c721?w=800&auto=format&fit=crop&q=60",
+                events: [
+                    { time: "09:00", title: "Oslo 市區觀光", twd: "", eur: "", note: "", link: "", method: "", region: "OSL", category: "行程", imageUrl: "https://a.travel-assets.com/findyours-php/viewfinder/images/res70/51000/51826-Oslo.jpg" },
+                    { time: "12:00", title: "午餐自理", twd: "", eur: "", note: "", link: "", method: "", region: "OSL", category: "午餐", imageUrl: "https://images.unsplash.com/photo-1555396273-367ea4eb4db5?w=300&auto=format&fit=crop&q=60" },
+                    { time: "14:00", title: "市區 → OSL 機場", twd: "393", eur: "", note: "", link: "https://www.vy.no/en", method: "VY", region: "OSL", category: "交通", imageUrl: "https://wowlavie-aws.hmgcdn.com/files/article/a1/16223/atl_m_190016223_510.jpg" },
+                    { time: "17:20", title: "奧斯陸 → 赫爾辛基", twd: "25,000", eur: "", note: "", link: "", method: "芬蘭航空", region: "OSL", category: "交通", imageUrl: "https://images.unsplash.com/photo-1436491865332-7a61a109cc05?w=300&auto=format&fit=crop&q=60" },
+                    { time: "20:55", title: "赫爾辛基 → 曼谷", twd: "", eur: "", note: "", link: "", method: "芬蘭航空", region: "Helsinki", category: "交通", imageUrl: "https://images.unsplash.com/photo-1483375801503-374c5f660610?w=300&auto=format&fit=crop&q=60" }
+                ]
+                },
+                {
+                id: "day11",
+                dayLabel: "回程 - 抵達",
+                date: "2026/03/14",
+                weekday: "週六",
+                headerImage: "https://images.unsplash.com/photo-1496442226666-8d4d0e62e6e9?w=800&auto=format&fit=crop&q=60",
+                events: [
+                    { time: "14:40", title: "曼谷 → 台北", twd: "", eur: "", note: "抵達溫暖的家", link: "", method: "芬蘭航空", region: "Asia", category: "交通", imageUrl: "https://images.unsplash.com/photo-1483375801503-374c5f660610?w=300&auto=format&fit=crop&q=60" }
+                ]
+                }
+            ];
+
+            const getCategoryIcon = (category, method) => {
+                if (category === "交通") {
+                if (method && (method.includes("航空") || method.includes("飛機"))) return <PlaneIcon size={16} />;
+                if (method && (method.includes("VR") || method.includes("VY"))) return <Train size={16} />;
+                return <Bus size={16} />;
+                }
+                if (category === "住宿") return <BedDouble size={16} />;
+                if (category.includes("餐") || category === "早餐" || category === "午餐" || category === "晚餐") return <Utensils size={16} />;
+                return <Camera size={16} />;
+            };
+
+            const getCategoryStyle = (category) => {
+                switch (category) {
+                case "交通": 
+                    return "text-sky-400 border-sky-500/30 bg-sky-500/10";
+                case "住宿": 
+                    return "text-pink-400 border-pink-500/30 bg-pink-500/10";
+                case "早餐":
+                case "午餐":
+                case "晚餐": 
+                    return "text-orange-400 border-orange-500/30 bg-orange-500/10";
+                default: 
+                    return "text-purple-400 border-purple-500/30 bg-purple-500/10";
+                }
+            };
+
+            const getBorderColor = (category) => {
+                switch (category) {
+                case "交通": return "border-l-sky-500";
+                case "住宿": return "border-l-pink-500";
+                case "早餐":
+                case "午餐":
+                case "晚餐": return "border-l-orange-500";
+                default: return "border-l-purple-500";
+                }
+            }
+
+            return (
+                <div className="min-h-screen font-sans text-slate-100 pb-20">
+                    <div className="fixed top-0 left-0 right-0 h-1 bg-gradient-to-r from-teal-400 via-purple-400 to-pink-400 z-50"></div>
+
+                    {/* Hero Header */}
+                    <header className="relative h-72 md:h-80 overflow-hidden">
+                        <img 
+                        src="https://images.unsplash.com/photo-1531366936337-7c912a4589a7?q=80&w=2070&auto=format&fit=crop" 
+                        alt="Northern Lights" 
+                        className="w-full h-full object-cover opacity-60"
+                        />
+                        <div className="absolute inset-0 bg-gradient-to-t from-slate-900 via-slate-900/60 to-transparent"></div>
+                        <div className="absolute bottom-0 left-0 p-6 md:p-12 w-full max-w-5xl mx-auto">
+                        <div className="flex flex-col md:flex-row md:items-end justify-between gap-4">
+                            <div>
+                            <div className="inline-flex items-center gap-2 px-3 py-1 bg-teal-500/20 text-teal-300 border border-teal-500/30 rounded-full text-xs font-bold tracking-wider mb-3 backdrop-blur-sm">
+                                <Sparkles size={12} />
+                                2026 行程規劃
+                            </div>
+                            <h1 className="text-4xl md:text-6xl font-bold mb-2 text-transparent bg-clip-text bg-gradient-to-r from-teal-200 to-purple-300">
+                                北歐極光之旅
+                            </h1>
+                            <p className="text-slate-400 text-lg flex flex-wrap items-center gap-4">
+                                <span className="flex items-center gap-1.5"><CalendarIcon size={18} className="text-teal-400"/> 2026/03/03 - 03/14</span>
+                                <span className="hidden md:inline text-slate-600">|</span>
+                                <span className="flex items-center gap-1.5"><MapPin size={18} className="text-purple-400"/> 芬蘭、挪威</span>
+                            </p>
+                            </div>
+                            
+                            <div className="flex gap-3">
+                            <button 
+                                onClick={() => toggleAll(true)}
+                                className="px-4 py-2 bg-slate-800 hover:bg-slate-700 border border-slate-700 rounded-lg text-sm font-medium transition-colors text-slate-300"
+                            >
+                                全部展開
+                            </button>
+                            <button 
+                                onClick={() => toggleAll(false)}
+                                className="px-4 py-2 bg-slate-800 hover:bg-slate-700 border border-slate-700 rounded-lg text-sm font-medium transition-colors text-slate-300"
+                            >
+                                全部收闔
+                            </button>
+                            </div>
+                        </div>
+                        </div>
+                    </header>
+
+                    <div className="max-w-4xl mx-auto px-4 -mt-6 relative z-10 space-y-8">
+                        {itineraryData.map((day) => (
+                        <div key={day.id} className="bg-slate-800/50 backdrop-blur-sm rounded-2xl overflow-hidden border border-slate-700/50 shadow-xl">
+                            {/* Day Header */}
+                            <div 
+                                onClick={() => toggleDay(day.id)}
+                                className="relative cursor-pointer group"
+                            >
+                            <div className="h-24 md:h-28 relative overflow-hidden">
+                                <div className="absolute inset-0 bg-slate-900/60 z-10 group-hover:bg-slate-900/50 transition-colors"></div>
+                                <img 
+                                src={day.headerImage} 
+                                onError={(e) => e.target.src = 'https://images.unsplash.com/photo-1483921020237-2ff51e8e4b22?w=800&auto=format&fit=crop&q=60'}
+                                alt={day.dayLabel} 
+                                className="w-full h-full object-cover opacity-50 group-hover:scale-105 transition-transform duration-700"
+                                />
+                                
+                                <div className="absolute inset-0 z-20 flex items-center justify-between px-6">
+                                    <div>
+                                        <h2 className="text-xl md:text-2xl font-bold text-white mb-1 group-hover:text-teal-200 transition-colors">{day.dayLabel}</h2>
+                                        <div className="text-slate-300 text-sm flex items-center gap-2">
+                                            <span className="font-mono text-teal-400">{day.date}</span>
+                                            <span className="w-1 h-1 rounded-full bg-slate-500"></span>
+                                            <span>{day.weekday}</span>
+                                        </div>
+                                    </div>
+                                    <div className="w-8 h-8 rounded-full bg-slate-700/50 flex items-center justify-center text-slate-300 group-hover:bg-teal-500 group-hover:text-white transition-all">
+                                        {expandedDays[day.id] ? <ChevronUp size={20} /> : <ChevronDown size={20} />}
+                                    </div>
+                                </div>
+                            </div>
+                            </div>
+
+                            {/* Events List */}
+                            {expandedDays[day.id] && (
+                            <div className="p-4 md:p-6 space-y-3 animate-in slide-in-from-top-2 duration-300">
+                                {day.events.map((event, idx) => (
+                                <div 
+                                    key={idx} 
+                                    className={`relative flex flex-col md:flex-row gap-4 p-4 rounded-xl bg-slate-800 hover:bg-slate-750 border border-slate-700 transition-all ${getBorderColor(event.category)} border-l-4`}
+                                >
+                                    {/* Time */}
+                                    <div className="flex flex-row md:flex-col items-center md:items-start md:w-20 gap-3 md:gap-1 shrink-0">
+                                        <span className="text-lg font-bold font-mono text-slate-200">{event.time}</span>
+                                        <span className={`text-[10px] px-2 py-0.5 rounded-full border font-medium tracking-wide ${getCategoryStyle(event.category)}`}>
+                                            {event.category}
+                                        </span>
+                                    </div>
+
+                                    {/* Image Thumbnail */}
+                                    <div className="w-full md:w-32 h-32 md:h-24 shrink-0 overflow-hidden rounded-lg bg-slate-700 relative group/img">
+                                        <img 
+                                            src={event.imageUrl}
+                                            onError={(e) => {
+                                                e.target.onerror = null; 
+                                                e.target.src = "https://images.unsplash.com/photo-1531366936337-7c912a4589a7?w=300&auto=format&fit=crop&q=60"; 
+                                            }}
+                                            alt={event.title}
+                                            className="w-full h-full object-cover hover:scale-110 transition-transform duration-500"
+                                        />
+                                    </div>
+
+                                    {/* Main Content */}
+                                    <div className="flex-1 min-w-0 flex flex-col justify-center">
+                                        <div className="flex items-center gap-2 mb-1.5">
+                                            <span className="p-1.5 rounded-md bg-slate-700/50 text-slate-400">
+                                                {getCategoryIcon(event.category, event.method)}
+                                            </span>
+                                            <h3 className="text-lg font-semibold text-slate-100">{event.title}</h3>
+                                        </div>
+
+                                        <div className="flex flex-wrap gap-2 text-sm text-slate-400 pl-9">
+                                            {event.method && (
+                                                <span className="flex items-center gap-1">
+                                                    <Navigation size={12} className="text-slate-500"/> {event.method}
+                                                </span>
+                                            )}
+                                            {event.note && (
+                                                <span className="text-yellow-500/80 bg-yellow-500/10 px-2 py-0.5 rounded text-xs border border-yellow-500/20">
+                                                    ★ {event.note}
+                                                </span>
+                                            )}
+                                        </div>
+                                    </div>
+
+                                    {/* Cost & Link */}
+                                    <div className="flex flex-row md:flex-col justify-between items-center md:items-end gap-3 mt-2 md:mt-0 pl-9 md:pl-0 border-t md:border-t-0 border-slate-700 pt-3 md:pt-0 shrink-0">
+                                        <div className="text-right flex md:block gap-3">
+                                            {event.twd && (
+                                                <div className="text-slate-300 font-mono text-sm">
+                                                    <span className="text-xs text-slate-500 mr-1">TWD</span>
+                                                    {event.twd}
+                                                </div>
+                                            )}
+                                            {event.eur && (
+                                                <div className="text-slate-400 font-mono text-sm">
+                                                    <span className="text-xs text-slate-500 mr-1">EUR</span>
+                                                    {event.eur}
+                                                </div>
+                                            )}
+                                        </div>
+                                        
+                                        {event.link && (
+                                            <a 
+                                                href={event.link} 
+                                                target="_blank" 
+                                                rel="noopener noreferrer"
+                                                className="flex items-center gap-1.5 px-3 py-1.5 bg-teal-600/20 hover:bg-teal-600/40 text-teal-300 text-xs font-medium rounded-lg border border-teal-500/30 transition-all hover:scale-105"
+                                            >
+                                                <ExternalLink size={12} />
+                                                查看資訊
+                                            </a>
+                                        )}
+                                    </div>
+                                </div>
+                                ))}
+                            </div>
+                            )}
+                        </div>
+                        ))}
+                        
+                        <div className="text-center py-10 space-y-2">
+                            <div className="w-12 h-1 bg-slate-700 mx-auto rounded-full"></div>
+                            <p className="text-slate-500 text-sm">Have a wonderful trip to Northern Europe!</p>
+                        </div>
+                    </div>
+                </div>
+            );
+        };
+
+        const root = ReactDOM.createRoot(document.getElementById('root'));
+        root.render(<ItineraryApp />);
+    </script>
+</body>
+</html>
